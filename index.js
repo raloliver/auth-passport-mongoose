@@ -10,6 +10,7 @@ const User = require('./models/user')
 const posts = require('./routes/posts')
 const private = require('./routes/private')
 const auth = require('./routes/auth')
+const pages = require('./routes/pages')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/auth-passport-mongoose'
 
@@ -47,6 +48,7 @@ app.use('/private', (req, res, next) => {
 
 app.use('/private', private)
 app.use('/', auth)
+app.use('/', pages)
 /**
  * countDocuments to count how many documents it is on db
  * check if has at least one user
@@ -64,11 +66,6 @@ const createUserZero = async () => {
     console.log('User zero already exists')
   }
 }
-
-/**
- * #TODO: whats is render method?
- */
-app.get('/', (req, res) => res.render('index'))
 
 /**
  * #TODO: how to use promise with mongoose?
