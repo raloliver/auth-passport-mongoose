@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const User = require('./models/user')
 const posts = require('./routes/posts')
+const private = require('./routes/private')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/auth-passport-mongoose'
 
@@ -14,6 +15,7 @@ app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
 app.use('/posts', posts)
+app.use('/private', private)
 
 /**
  * countDocuments to count how many documents it is on db
