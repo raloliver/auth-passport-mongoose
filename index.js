@@ -27,10 +27,12 @@ app.use('/private', (req, res, next) => {
   if ('user' in req.session) {
     return next()
   }
-  res.send('You need to loggedin.')
+  res.redirect('/login')
 })
 
 app.use('/private', private)
+
+app.get('/login', (req, res) => res.render('login'))
 
 /**
  * countDocuments to count how many documents it is on db
