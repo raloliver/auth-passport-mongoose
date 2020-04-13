@@ -5,6 +5,7 @@ const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const session = require('express-session')
+const bodyParser = require('body-parser')
 const User = require('./models/user')
 const posts = require('./routes/posts')
 const private = require('./routes/private')
@@ -17,6 +18,7 @@ app.set('view engine', 'ejs')
  * #TODO: whats is the difference between set and use on express?
  */
 app.use(session({ secret: 'auth-passport-mongoose' }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static('public'))
 app.use('/posts', posts)
@@ -33,6 +35,11 @@ app.use('/private', (req, res, next) => {
 app.use('/private', private)
 
 app.get('/login', (req, res) => res.render('login'))
+
+app.post('/login', async (req, res) => {
+  const user = await User.findOne({ username: req.body.username })
+  res.send(user)
+})
 
 /**
  * countDocuments to count how many documents it is on db
