@@ -38,7 +38,11 @@ app.get('/login', (req, res) => res.render('login'))
 
 app.post('/login', async (req, res) => {
   const user = await User.findOne({ username: req.body.username })
-  res.send(user)
+  const isValid = await user.checkPassword(req.body.password)
+  res.send({
+    user,
+    isValid
+  })
 })
 
 /**
