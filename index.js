@@ -4,14 +4,16 @@ const path = require('path')
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
+const User = require('./models/user')
+const posts = require('./routes/posts')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/auth-passport-mongoose'
-const User = require('./models/user')
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
+app.use('/posts', posts)
 
 /**
  * countDocuments to count how many documents it is on db
