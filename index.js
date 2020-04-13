@@ -17,7 +17,7 @@ app.set('view engine', 'ejs')
 /**
  * #TODO: whats is the difference between set and use on express?
  */
-app.use(session({ secret: 'auth-passport-mongoose' }))
+app.use(session({ secret: 'auth-passport-mongoose', saveUninitialized: true, resave: false }))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static('public'))
@@ -35,10 +35,10 @@ app.use('/private', (req, res, next) => {
 app.use('/private', private)
 
 app.get('/login', (req, res) => res.render('login'))
-
 app.post('/login', async (req, res) => {
   const user = await User.findOne({ username: req.body.username })
-  const isValid = await user.checkPassword(req.body.password)
+  const password = await user ? user.checkPassword(req.body.password) : false
+  const isValid = await password ? true : false
   if (isValid) {
     req.session.user = user
     res.redirect('/private/posts')
