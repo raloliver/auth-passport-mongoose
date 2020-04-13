@@ -21,6 +21,18 @@ app.use(session({ secret: 'auth-passport-mongoose', saveUninitialized: true, res
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static('public'))
+
+/**
+ * All reqs be through here
+ */
+
+app.use((req, res, next) => {
+  if ('user' in req.session) {
+    res.locals.user = req.session.user
+  }
+  next()
+})
+
 app.use('/posts', posts)
 /**
  * Middleware thats check if user is logged in
