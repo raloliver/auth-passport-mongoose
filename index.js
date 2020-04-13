@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const User = require('./models/user')
 const posts = require('./routes/posts')
 const private = require('./routes/private')
+const auth = require('./routes/auth')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/auth-passport-mongoose'
 
@@ -21,6 +22,18 @@ app.use(session({ secret: 'auth-passport-mongoose', saveUninitialized: true, res
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static('public'))
+
+/**
+ * All reqs be through here
+ */
+
+app.use((req, res, next) => {
+  if ('user' in req.session) {
+    res.locals.user = req.session.user
+  }
+  next()
+})
+
 app.use('/posts', posts)
 /**
  * Middleware thats check if user is logged in
@@ -33,20 +46,7 @@ app.use('/private', (req, res, next) => {
 })
 
 app.use('/private', private)
-
-app.get('/login', (req, res) => res.render('login'))
-app.post('/login', async (req, res) => {
-  const user = await User.findOne({ username: req.body.username })
-  const password = await user ? user.checkPassword(req.body.password) : false
-  const isValid = await password ? true : false
-  if (isValid) {
-    req.session.user = user
-    res.redirect('/private/posts')
-  } else {
-    res.redirect('/login')
-  }
-})
-
+app.use('/', auth)
 /**
  * countDocuments to count how many documents it is on db
  * check if has at least one user
