@@ -7,6 +7,7 @@ mongoose.Promise = global.Promise
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const User = require('./models/user')
+const Post = require('./models/post')
 const posts = require('./routes/posts')
 const private = require('./routes/private')
 const auth = require('./routes/auth')
@@ -65,6 +66,24 @@ const createUserZero = async () => {
   } else {
     console.log('User zero already exists')
   }
+
+  const post = new Post({
+    title: 'Título ' + new Date().valueOf(),
+    content: 'Conteúdo',
+    date: new Date().getTime(),
+    status: 'public'
+  })
+
+  await post.save()
+
+  const privatePost = new Post({
+    title: 'Título (para membros) ' + new Date().valueOf(),
+    content: 'Conteúdo (para membros)',
+    date: new Date().getTime(),
+    status: 'private'
+  })
+
+  await privatePost.save()
 }
 
 /**
@@ -77,7 +96,5 @@ mongoose
     app.listen(port, () => console.log(`listening server on port ${port}`))
   })
   .catch(err => console.log(err))
-
-
 
 
