@@ -10,7 +10,7 @@ router.post('/login', async (req, res) => {
     const isValid = await password ? true : false
     if (isValid) {
         req.session.user = user
-        res.redirect('/posts')
+        res.redirect('/private/posts')
     } else {
         res.redirect('/login')
     }
