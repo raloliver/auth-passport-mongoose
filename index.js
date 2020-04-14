@@ -7,9 +7,11 @@ mongoose.Promise = global.Promise
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const User = require('./models/user')
+const Post = require('./models/post')
 const posts = require('./routes/posts')
 const private = require('./routes/private')
 const auth = require('./routes/auth')
+const pages = require('./routes/pages')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/auth-passport-mongoose'
 
@@ -47,6 +49,7 @@ app.use('/private', (req, res, next) => {
 
 app.use('/private', private)
 app.use('/', auth)
+app.use('/', pages)
 /**
  * countDocuments to count how many documents it is on db
  * check if has at least one user
@@ -63,12 +66,25 @@ const createUserZero = async () => {
   } else {
     console.log('User zero already exists')
   }
-}
 
-/**
- * #TODO: whats is render method?
- */
-app.get('/', (req, res) => res.render('index'))
+  const post = new Post({
+    title: 'Título ' + new Date().valueOf(),
+    content: 'Conteúdo',
+    date: new Date().getTime(),
+    status: 'public'
+  })
+
+  await post.save()
+
+  const privatePost = new Post({
+    title: 'Título (para membros) ' + new Date().valueOf(),
+    content: 'Conteúdo (para membros)',
+    date: new Date().getTime(),
+    status: 'private'
+  })
+
+  await privatePost.save()
+}
 
 /**
  * #TODO: how to use promise with mongoose?
@@ -80,7 +96,5 @@ mongoose
     app.listen(port, () => console.log(`listening server on port ${port}`))
   })
   .catch(err => console.log(err))
-
-
 
 
