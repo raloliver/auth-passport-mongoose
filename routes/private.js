@@ -8,7 +8,11 @@ const Post = require('../models/post')
  */
 router.use((req, res, next) => {
     if ('user' in req.session) {
-        return next()
+        if (req.session.user.roles.indexOf('private') >= 0) {
+            return next()
+        } else {
+            res.redirect('/')
+        }
     }
     res.redirect('/login')
 })

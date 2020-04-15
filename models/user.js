@@ -14,7 +14,8 @@ const UserSchema = new mongoose.Schema({
     roles: {
         type: [String],
         enum: ['private', 'master']
-    }
+    },
+    currentRole: String
 })
 
 /**
