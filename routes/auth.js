@@ -28,6 +28,7 @@ router.get('/profile/:profile', (req, res) => {
 router.get('/login', (req, res) => res.render('login'))
 router.post('/login', async (req, res) => {
     const user = await User.findOne({ username: req.body.username })
+    // maybe you can check if user exists
     const password = await user ? user.checkPassword(req.body.password) : false
     const isValid = await password ? true : false
     if (isValid) {
