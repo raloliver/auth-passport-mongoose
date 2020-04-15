@@ -1,8 +1,18 @@
 const express = require('express')
-
 const router = express.Router()
 
 const Post = require('../models/post')
+
+/**
+ * Middleware thats check if user is logged in
+ */
+router.use((req, res, next) => {
+    if ('user' in req.session) {
+        return next()
+    }
+    res.redirect('/login')
+})
+
 router.get('/', (req, res) => {
     res.send('OPS! You dont have access.')
 })
