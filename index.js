@@ -25,31 +25,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static('public'))
 
-/**
- * All reqs be through here
- */
-
-app.use((req, res, next) => {
-  if ('user' in req.session) {
-    res.locals.user = req.session.user
-  }
-  next()
-})
-
-app.use('/posts', posts)
-/**
- * Middleware thats check if user is logged in
- */
-app.use('/private', (req, res, next) => {
-  if ('user' in req.session) {
-    return next()
-  }
-  res.redirect('/login')
-})
-
-app.use('/private', private)
 app.use('/', auth)
 app.use('/', pages)
+app.use('/posts', posts)
+
+app.use('/private', private)
 /**
  * countDocuments to count how many documents it is on db
  * check if has at least one user
@@ -74,7 +54,7 @@ const createUserZero = async () => {
     status: 'public'
   })
 
-  await post.save()
+  // await post.save()
 
   const privatePost = new Post({
     title: 'Título (para membros) ' + new Date().valueOf(),
@@ -83,7 +63,7 @@ const createUserZero = async () => {
     status: 'private'
   })
 
-  await privatePost.save()
+  // await privatePost.save()
 }
 
 /**
