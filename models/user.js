@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
+/**
+ * #TODO change role to profile (on all calls)
+ */
+
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -10,7 +14,12 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    roles: {
+        type: [String],
+        enum: ['private', 'master']
+    },
+    currentRole: String
 })
 
 /**

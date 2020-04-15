@@ -8,22 +8,23 @@ const Post = require('../models/post')
  */
 router.use((req, res, next) => {
     if ('user' in req.session) {
-        if (req.session.user.roles.indexOf('private') >= 0) {
+        if (req.session.user.roles.indexOf('master') >= 0) {
             return next()
         } else {
             res.redirect('/')
         }
+
     }
     res.redirect('/login')
 })
 
 router.get('/', (req, res) => {
-    res.send('OPS! You dont have access.')
+    res.send('control')
 })
 
 router.get('/posts', async (req, res) => {
-    const posts = await Post.find({ status: 'private' })
-    res.render('posts/private', { posts })
+    const posts = await Post.find({})
+    res.render('posts/control', { posts })
 })
 
 module.exports = router

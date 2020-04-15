@@ -12,6 +12,7 @@ const posts = require('./routes/posts')
 const private = require('./routes/private')
 const auth = require('./routes/auth')
 const pages = require('./routes/pages')
+const control = require('./routes/control')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/auth-passport-mongoose'
 
@@ -28,23 +29,32 @@ app.use(express.static('public'))
 app.use('/', auth)
 app.use('/', pages)
 app.use('/posts', posts)
-
 app.use('/private', private)
+app.use('/control', control)
+
 /**
  * countDocuments to count how many documents it is on db
  * check if has at least one user
  */
 const createUserZero = async () => {
-  const total = await User.countDocuments({ username: 'raloliver' })
+  const total = await User.countDocuments({ username: 'ral' })
   if (total === 0) {
     const user = new User({
-      username: 'raloliver',
-      password: '123456!Qw'
+      username: 'ral',
+      password: '123456!Qw',
+      roles: ['private', 'master']
     })
     await user.save()
-    console.log('User zero created!')
+
+    const userPrivate = new User({
+      username: 'raloliver',
+      password: '123456!Qw',
+      roles: ['private']
+    })
+    await userPrivate.save()
+    console.log('Master user created!')
   } else {
-    console.log('User zero already exists')
+    console.log('Master user already exists')
   }
 
   const post = new Post({
